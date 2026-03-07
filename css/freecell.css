@@ -1,89 +1,275 @@
+@charset "UTF-8";
+:root {
+    /* Catppuccin Mocha Palette */
+    --ctp-rosewater: #f5e0dc;
+    --ctp-flamingo: #f2cdcd;
+    --ctp-pink: #f5c2e7;
+    --ctp-mauve: #cba6f7;
+    --ctp-red: #f38ba8;
+    --ctp-maroon: #eba0ac;
+    --ctp-peach: #fab387;
+    --ctp-yellow: #f9e2af;
+    --ctp-green: #a6e3a1;
+    --ctp-teal: #94e2d5;
+    --ctp-sky: #89dceb;
+    --ctp-sapphire: #74c7ec;
+    --ctp-blue: #89b4fa;
+    --ctp-lavender: #b4befe;
+    --ctp-text: #cdd6f4;
+    --ctp-subtext1: #bac2de;
+    --ctp-subtext0: #a6adc8;
+    --ctp-overlay2: #9399b2;
+    --ctp-overlay1: #7f849c;
+    --ctp-overlay0: #6c7086;
+    --ctp-surface2: #585b70;
+    --ctp-surface1: #45475a;
+    --ctp-surface0: #313244;
+    --ctp-base: #1e1e2e;
+    --ctp-mantle: #181825;
+    --ctp-crust: #11111b;
+
+    /* Theme Variables */
+    --bg-color: var(--ctp-base);
+    --text-color: var(--ctp-text);
+    --accent-color: var(--ctp-mauve);
+    --accent-gradient: linear-gradient(135deg, var(--ctp-mauve) 0%, var(--ctp-blue) 100%);
+    --slot-bg: var(--ctp-surface0);
+    --slot-border: var(--ctp-surface2);
+    --collector-bg: rgba(203, 166, 247, 0.05); /* Mauve tint for foundations */
+    --collector-border: var(--ctp-mauve);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --glass-bg: var(--ctp-mantle);
+    --glass-border: var(--ctp-surface1);
+}
+
 body {
-    background-color: #eeeeee;
-    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif;
-    font-size: 0.8em;
+    background-color: var(--ctp-crust);
+    color: var(--text-color);
+    font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+#title {
+    padding: 2rem 0 1rem;
+    text-align: center;
 }
 
 h1 {
-    text-align: center;
-    font-size: 2.5em;
-    margin: 1em 0em 0.3em 0em;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin: 0;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -2px;
 }
 
 h2 {
-    text-align: center;
-    margin: 0px 0px 10px 0px;
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
 }
 
-p {
-    margin: 0.5em 0.5em 0em 0.5em;
+button {
+    background: var(--ctp-surface0);
+    border: 1px solid var(--ctp-surface2);
+    color: var(--ctp-text);
+    padding: 0.8rem 2rem;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(12px);
 }
 
-ul {
-    margin: 0px;
-}
-
-.card {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    height: 96px;
-}
-
-.column {
-	position: relative;
-	float: left;
-	margin: 50px 5px 0px 5px;
-    width: 72px;
-    height: 96px;
-    border-style: solid;
-    border-width: 1px 1px 0px 1px;
-    border-color: #58FA58;
-    border-radius: 3px 3px 0px 0px;
-    -moz-border-radius: 3px 3px 0px 0px;
-    -webkit-border-radius: 3px 3px 0px 0px;
-}
-
-.free {
-    float: left;
-}
-
-.highlight {
-    -moz-box-shadow: 0px 0px 8px #f00;
-    -webkit-box-shadow: 0px 0px 8px #f00;
-    box-shadow: 0px 0px 8px #f00;
-}
-
-.suit {
-    float: right;
-}
-
-.free, .suit {
-    width: 72px;
-    height: 96px;
-    border-style: solid;
-    border-width: 3px;
-    border-color: #58FA58;
-    margin: 3px;
-    border-radius: 3px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
+button:hover {
+    background: var(--ctp-mauve);
+    color: var(--ctp-base);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 24px rgba(203, 166, 247, 0.3);
+    border-color: var(--ctp-mauve);
 }
 
 #table {
-    background-color: #04B404;
-    width: 720px;
-    height: 700px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 10px;
+    position: relative;
+    max-width: 900px;
+    height: 800px;
+    margin: 1rem auto 4rem;
+    background: var(--ctp-base);
+    border: 1px solid var(--ctp-surface1);
+    border-radius: 40px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+}
+
+/* Slots Layout */
+.free, .suit, .column {
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.free, .suit {
+    width: 85px;
+    height: 120px;
+    border-radius: 18px;
+    position: relative;
+    background: var(--ctp-surface0);
+    border: 2px dashed var(--ctp-surface2);
+}
+
+.free { 
+    float: left; 
+    margin-right: 15px; 
+}
+
+/* Foundational Collector Slots */
+.suit { 
+    float: right; 
+    margin-left: 15px; 
+    background: var(--collector-bg);
+    border: 2px solid var(--ctp-surface2);
+    box-shadow: inset 0 0 15px rgba(203, 166, 247, 0.1);
+}
+
+.suit::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.suit:not(:empty) {
+    border-color: var(--ctp-mauve);
     border-style: solid;
-    border-width: 5px;
-    border-color: black;
-    border-radius: 15px;
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
-    -moz-box-shadow: 15px 15px 15px #888888;
-    -webkit-box-shadow: 15px 15px 15px #888888;
-    box-shadow: 15px 15px 15px #888888;
+}
+
+.suit::before {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.25; /* Increased visibility */
+    font-size: 3rem;
+    font-weight: bold;
+    pointer-events: none;
+    font-family: "Segoe UI Symbol", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+/* Suit Icons in Empty Slots */
+#suit0::before { content: '♣'; color: var(--ctp-overlay1); }
+#suit1::before { content: '♠'; color: var(--ctp-overlay1); }
+#suit2::before { content: '♥'; color: var(--ctp-red); }
+#suit3::before { content: '♦'; color: var(--ctp-red); }
+
+.column {
+    position: absolute;
+    top: 200px;
+    width: 85px;
+    height: 580px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--ctp-surface1);
+    border-radius: 18px;
+}
+
+#col0 { left: 40px; }
+#col1 { left: 140px; }
+#col2 { left: 240px; }
+#col3 { left: 340px; }
+#col4 { left: 440px; }
+#col5 { left: 540px; }
+#col6 { left: 640px; }
+#col7 { left: 740px; }
+
+/* Cards */
+.card {
+    position: absolute;
+    width: 85px;
+    height: 120px;
+    border-radius: 14px;
+    cursor: grab;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: white;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    user-select: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.5);
+}
+
+.card.ui-draggable-dragging {
+    cursor: grabbing;
+    transform: scale(1.08) rotate(3deg);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+    z-index: 9999 !important;
+}
+
+/* Valid Drop Hover State */
+.ui-droppable-hover {
+    background: rgba(203, 166, 247, 0.2) !important;
+    border: 2px solid var(--ctp-mauve) !important;
+    box-shadow: 0 0 20px rgba(203, 166, 247, 0.4);
+}
+
+/* Dialog Styling */
+.ui-dialog {
+    background: var(--ctp-mantle) !important;
+    border: 1px solid var(--ctp-surface1) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.ui-dialog-titlebar {
+    background: transparent !important;
+    border: none !important;
+    color: var(--ctp-mauve) !important;
+    font-weight: 800 !important;
+}
+
+.ui-widget-content {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+}
+
+#windialog {
+    text-align: center;
+    padding: 2rem;
+}
+
+#windialog p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--ctp-green);
+}
+
+/* Scrollbar Style */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--ctp-crust);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--ctp-surface0);
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--ctp-surface1);
 }
