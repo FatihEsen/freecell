@@ -35,11 +35,10 @@
     --accent-gradient: linear-gradient(135deg, var(--ctp-mauve) 0%, var(--ctp-blue) 100%);
     --slot-bg: var(--ctp-surface0);
     --slot-border: var(--ctp-surface2);
-    --collector-bg: rgba(203, 166, 247, 0.05); /* Mauve tint for foundations */
-    --collector-border: var(--ctp-mauve);
-    --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    --glass-bg: var(--ctp-mantle);
-    --glass-border: var(--ctp-surface1);
+    --collector-bg: rgba(203, 166, 247, 0.05);
+    --shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    --card-width: 85px;
+    --card-height: 120px;
 }
 
 body {
@@ -50,6 +49,8 @@ body {
     padding: 0;
     overflow-x: hidden;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 #title {
@@ -75,7 +76,7 @@ h2 {
     gap: 1.5rem;
 }
 
-button {
+.premium-btn {
     background: var(--ctp-surface0);
     border: 1px solid var(--ctp-surface2);
     color: var(--ctp-text);
@@ -88,7 +89,7 @@ button {
     backdrop-filter: blur(12px);
 }
 
-button:hover {
+.premium-btn:hover {
     background: var(--ctp-mauve);
     color: var(--ctp-base);
     transform: translateY(-4px) scale(1.05);
@@ -97,53 +98,41 @@ button:hover {
 }
 
 #table {
-    position: relative;
-    max-width: 900px;
-    height: 800px;
+    display: grid;
+    grid-template-columns: repeat(8, var(--card-width));
+    grid-template-rows: var(--card-height) 1fr;
+    gap: 20px;
+    justify-content: center;
+    max-width: fit-content;
     margin: 1rem auto 4rem;
     background: var(--ctp-base);
     border: 1px solid var(--ctp-surface1);
     border-radius: 40px;
-    padding: 2.5rem;
+    padding: 3rem;
     box-shadow: var(--shadow);
+    position: relative;
 }
 
-/* Slots Layout */
+/* Slots */
 .free, .suit, .column {
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-}
-
-.free, .suit {
-    width: 85px;
-    height: 120px;
+    width: var(--card-width);
+    height: var(--card-height);
     border-radius: 18px;
     position: relative;
     background: var(--ctp-surface0);
     border: 2px dashed var(--ctp-surface2);
+    transition: all 0.3s ease;
 }
 
-.free { 
-    float: left; 
-    margin-right: 15px; 
+.free {
+    grid-row: 1;
 }
 
-/* Foundational Collector Slots */
-.suit { 
-    float: right; 
-    margin-left: 15px; 
+.suit {
+    grid-row: 1;
     background: var(--collector-bg);
-    border: 2px solid var(--ctp-surface2);
-    box-shadow: inset 0 0 15px rgba(203, 166, 247, 0.1);
-}
-
-.suit::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 16px;
-    border: 2px solid transparent;
-    transition: border-color 0.3s ease;
+    border: 2px solid var(--ctp-surface1);
+    box-shadow: inset 0 0 15px rgba(203, 166, 247, 0.05);
 }
 
 .suit:not(:empty) {
@@ -157,119 +146,140 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.25; /* Increased visibility */
+    opacity: 0.15;
     font-size: 3rem;
-    font-weight: bold;
     pointer-events: none;
-    font-family: "Segoe UI Symbol", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
 }
 
-/* Suit Icons in Empty Slots */
-#suit0::before { content: '♣'; color: var(--ctp-overlay1); }
-#suit1::before { content: '♠'; color: var(--ctp-overlay1); }
-#suit2::before { content: '♥'; color: var(--ctp-red); }
-#suit3::before { content: '♦'; color: var(--ctp-red); }
+#suit0::before { content: '♣'; }
+#suit1::before { content: '♠'; }
+#suit2::before { content: '♥'; color: var(--ctp-red); opacity: 0.2; }
+#suit3::before { content: '♦'; color: var(--ctp-red); opacity: 0.2; }
 
 .column {
-    position: absolute;
-    top: 200px;
-    width: 85px;
-    height: 580px;
-    background: rgba(255, 255, 255, 0.02);
+    grid-row: 2;
+    height: 600px;
+    background: rgba(255, 255, 255, 0.01);
     border: 1px solid var(--ctp-surface1);
-    border-radius: 18px;
+    border-style: solid;
 }
 
-#col0 { left: 40px; }
-#col1 { left: 140px; }
-#col2 { left: 240px; }
-#col3 { left: 340px; }
-#col4 { left: 440px; }
-#col5 { left: 540px; }
-#col6 { left: 640px; }
-#col7 { left: 740px; }
+/* Drop Targets */
+.drop-target {
+    background: rgba(203, 166, 247, 0.15) !important;
+    border: 2px solid var(--ctp-mauve) !important;
+    box-shadow: 0 0 20px rgba(203, 166, 247, 0.3);
+    transform: scale(1.02);
+}
 
 /* Cards */
 .card {
     position: absolute;
-    width: 85px;
-    height: 120px;
+    width: var(--card-width);
+    height: var(--card-height);
     border-radius: 14px;
     cursor: grab;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     background: white;
     overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    user-select: none;
+    touch-action: none;
+    z-index: 10;
 }
 
 .card img {
     width: 100%;
     height: 100%;
+    display: block;
     pointer-events: none;
-    user-select: none;
 }
 
-.card:hover {
+.card:not(.dragging):hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    z-index: 100;
 }
 
-.card.ui-draggable-dragging {
+.card.dragging {
+    position: fixed; /* Important for global dragging */
     cursor: grabbing;
-    transform: scale(1.08) rotate(3deg);
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
-    z-index: 9999 !important;
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    pointer-events: none;
+    transition: none !important;
 }
 
-/* Valid Drop Hover State */
-.ui-droppable-hover {
-    background: rgba(203, 166, 247, 0.2) !important;
-    border: 2px solid var(--ctp-mauve) !important;
-    box-shadow: 0 0 20px rgba(203, 166, 247, 0.4);
+/* Dialogs */
+.game-dialog {
+    background: var(--ctp-mantle);
+    border: 1px solid var(--ctp-surface1);
+    border-radius: 24px;
+    padding: 0;
+    color: var(--ctp-text);
+    box-shadow: var(--shadow);
+    max-width: 500px;
+    width: 90%;
 }
 
-/* Dialog Styling */
-.ui-dialog {
-    background: var(--ctp-mantle) !important;
-    border: 1px solid var(--ctp-surface1) !important;
-    border-radius: 20px !important;
-    box-shadow: var(--shadow) !important;
+.game-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
 }
 
-.ui-dialog-titlebar {
-    background: transparent !important;
-    border: none !important;
-    color: var(--ctp-mauve) !important;
-    font-weight: 800 !important;
-}
-
-.ui-widget-content {
-    background: transparent !important;
-    color: var(--ctp-text) !important;
-}
-
-#windialog {
+.dialog-content {
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 2rem;
 }
 
-#windialog p {
-    font-size: 1.5rem;
+.dialog-content h3 {
+    font-size: 2rem;
+    margin: 0 0 1.5rem;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.help-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    text-align: left;
     margin-bottom: 2rem;
-    color: var(--ctp-green);
+    padding-right: 1rem;
+}
+
+.help-scroll h4 {
+    color: var(--ctp-mauve);
+    margin: 1.5rem 0 0.5rem;
+}
+
+.help-scroll p, .help-scroll li {
+    line-height: 1.6;
+    color: var(--ctp-subtext1);
 }
 
 /* Scrollbar Style */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: var(--ctp-crust);
+    background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background: var(--ctp-surface0);
-    border-radius: 5px;
+    background: var(--ctp-surface1);
+    border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--ctp-surface1);
+    background: var(--ctp-surface2);
+}
+
+@media (max-width: 950px) {
+    #table {
+        transform: scale(0.8);
+        margin-top: -50px;
+    }
 }
