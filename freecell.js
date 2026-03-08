@@ -44,6 +44,7 @@ class Game {
         this.suits = Array(4).fill(null);
         this.columns = Array(8).fill(null).map(() => []);
         this.deck = new Deck();
+        this.history = [];
     }
 
     init() {
@@ -51,6 +52,8 @@ class Game {
         for (let i = 0; i < 52; i++) {
             this.columns[i % 8].push(this.deck.cards[i]);
         }
+        this.initialState = this.snapshot();
+        this.history = [];
     }
 
     reset() {
@@ -58,6 +61,40 @@ class Game {
         this.suits = Array(4).fill(null);
         this.columns = Array(8).fill(null).map(() => []);
         this.init();
+    }
+
+    restartCurrent() {
+        if (this.initialState) {
+            this.restore(this.initialState);
+            this.history = [];
+        }
+    }
+
+    undo() {
+        if (this.history.length > 0) {
+            const prevState = this.history.pop();
+            this.restore(prevState);
+            return true;
+        }
+        return false;
+    }
+
+    snapshot() {
+        return {
+            free: [...this.free],
+            suits: [...this.suits],
+            columns: this.columns.map(col => [...col])
+        };
+    }
+
+    restore(state) {
+        this.free = [...state.free];
+        this.suits = [...state.suits];
+        this.columns = state.columns.map(col => [...col]);
+    }
+
+    saveState() {
+        this.history.push(this.snapshot());
     }
 
     getValidDragIds() {
@@ -141,6 +178,7 @@ class Game {
     }
 
     moveCard(dragId, dropId) {
+        this.saveState();
         const stack = this.popStack(dragId);
         if (!stack) return;
 
@@ -195,6 +233,17 @@ class UI {
         document.getElementById('newgame').addEventListener('click', () => {
             this.game.reset();
             this.render();
+        });
+
+        document.getElementById('restart').addEventListener('click', () => {
+            this.game.restartCurrent();
+            this.render();
+        });
+
+        document.getElementById('undo').addEventListener('click', () => {
+            if (this.game.undo()) {
+                this.render();
+            }
         });
 
         const helpDialog = document.getElementById('helptext');
@@ -375,8 +424,21 @@ class UI {
 
     autoMove(cardId) {
         const drops = this.game.getValidDropIds(cardId);
+        if (drops.length === 0) return;
+
+        // Best move selection:
+        // 1. Foundation (if safe)
+        // 2. Foundation (even if unsafe, if it's the only one)
+        // 3. Columns (non-empty)
+        // 4. Free cells
+        // 5. Empty columns
+
         const suitDrop = drops.find(d => d.startsWith('suit'));
-        const target = suitDrop || drops.find(d => d.startsWith('free'));
+        const columnDrop = drops.find(d => d.startsWith('col') && this.game.columns[parseInt(d.slice(-1), 10)].length > 0);
+        const freeDrop = drops.find(d => d.startsWith('free'));
+        const emptyColDrop = drops.find(d => d.startsWith('col') && this.game.columns[parseInt(d.slice(-1), 10)].length === 0);
+
+        const target = suitDrop || columnDrop || freeDrop || emptyColDrop;
 
         if (target) {
             const el = document.getElementById(`card-${cardId}`);
@@ -394,6 +456,7 @@ class UI {
                 this.game.moveCard(cardId, target);
                 this.render();
                 if (this.game.isGameWon()) this.showWin();
+                this.autoCollect(); // Check for chains
             }, 300);
         }
     }
